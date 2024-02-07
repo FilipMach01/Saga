@@ -1,11 +1,13 @@
+
 import pygame
 import sys
-from pygame.locals import QUIT
+from pygame.locals import QUIT,KEYDOWN
 import random
 
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption('Saga!')
+
 
 enemies = []
 enemies_to_delete = []
@@ -41,19 +43,28 @@ player_rect = player_surf_front.get_rect(center = (400,300))
 enemy_surf = pygame.image.load("graphic/enemy.png").convert_alpha()
 
 # font
-base_font = pygame.font.Font("graphic/Pixeltype.ttf",80) 
-second_font = pygame.font.Font("graphic/Pixeltype.ttf",50) 
+base_font = pygame.font.Font("graphic/Pixeltype (1).ttf",80) 
+second_font = pygame.font.Font("graphic/Pixeltype (1).ttf",50) 
 
+# blit
+blit = screen.blit
 
 game_active = False
-Run = True
-while Run:
+running = True
+while running:
   clock.tick(fps)
   for event in pygame.event.get():
-      if event.type == QUIT:
-          Run = False
+      if event.type == QUIT:# or event.type == KEYDOWN and event.key == pygame.K_ESCAPE:
+          running = False
   keys = pygame.key.get_pressed()
   
+  if keys[pygame.K_ESCAPE]:
+    if game_active == True:
+      game_active = False
+    else:
+      running = False
+       
+
   if keys[pygame.K_SPACE]:
      game_active = True          
   
@@ -65,23 +76,24 @@ while Run:
         background_rect.top = 0
       screen.blit(player_surf_back, player_rect)
     
-    elif keys[pygame.K_s]:
+    if keys[pygame.K_s]:
       background_rect.top -= background_speed
       if background_rect.top < -1400: 
         background_rect.top = -1400
       screen.blit(player_surf_front, player_rect)
     
-    elif keys[pygame.K_a]:
+    if keys[pygame.K_a]:
       background_rect.left += background_speed
       if background_rect.left > 0:
           background_rect.left = 0 
       screen.blit(player_surf_left, player_rect)
     
-    elif keys[pygame.K_d]:
+    if keys[pygame.K_d]:
       background_rect.right -= background_speed
-      if background_rect.right < 700:
-          background_rect.right = 700
+      if background_rect.right < 800:
+          background_rect.right = 800
       screen.blit(player_surf_right, player_rect)
+
     
     else: 
       screen.blit(player_surf_front, player_rect) 
@@ -97,7 +109,7 @@ while Run:
     
 
   # enemies
-  # if len(enemies) < 0:
+  # if len(enemies) < 2:
   #   # Generate new enemy
   #   new_enemy = {
   #       'surface': enemy_surf,
